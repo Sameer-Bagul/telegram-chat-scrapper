@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+beautifulsoup4
+lxml
+phonenumbers
+email-validator
+pandas
+python-dateutil
+spacy
