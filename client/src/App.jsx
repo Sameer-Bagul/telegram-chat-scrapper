@@ -3,6 +3,7 @@ import './App.css';
 import FileUpload from './components/FileUpload';
 import JobTable from './components/JobTable';
 import FilterControls from './components/FilterControls';
+import DownloadOptions from './components/DownloadOptions';
 import apiService from './services/api';
 import { filterJobPostings, getJobStatistics } from './utils/dataFilter';
 
@@ -35,6 +36,17 @@ function App() {
 
   const handleToggleFilter = (enabled) => {
     setShowFiltered(enabled);
+  };
+
+  const handleDownload = async () => {
+    try {
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `telegram_jobs_${timestamp}.csv`;
+      await apiService.downloadCSVFile(filename);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      throw error;
+    }
   };
 
   // Get current jobs to display
@@ -97,6 +109,25 @@ function App() {
                 </p>
               </div>
               <JobTable jobs={currentJobs} />
+            </section>
+          )}
+
+          {currentJobs.length > 0 && (
+            <section>
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+                  Step 3: Download Your Data
+                </h2>
+                <p className="text-gray-600">
+                  Export your {showFiltered ? 'filtered' : 'complete'} job data in multiple formats
+                </p>
+              </div>
+              
+              <DownloadOptions 
+                jobs={currentJobs} 
+                onDownload={handleDownload}
+                disabled={isUploading}
+              />
             </section>
           )}
 
